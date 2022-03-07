@@ -2,11 +2,15 @@
 
 #include <libgeneral/macros.h>
 
+#include <iostream>
+#include <chrono>
+#include <thread>
 #include "ManualDeviceManager.hpp"
 #include <map>
 
 
 #define PORT 32498
+using namespace std::chrono_literals;
 
 std::vector<std::string> split(std::string str, std::string delimiter) {
     std::vector<std::string> internal;
@@ -89,7 +93,7 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
                 write(new_socket, "ERR", 4);
             }      
         }
-        
+        std::this_thread::sleep_for(2000ms);
     }
 }
 
@@ -137,6 +141,6 @@ void ManualDeviceManager::kill() noexcept {
 }
 
 void ManualDeviceManager::loopEvent() {
-
+    std::this_thread::sleep_for(2000ms);
 }
 
