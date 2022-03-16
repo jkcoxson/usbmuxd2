@@ -77,6 +77,11 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
         std::string serviceName = lines[2];
         std::string addr = lines[3];
         if (toggle == "1") {
+            // Determine if device is already in the list
+            if (devices.find(uuid) != devices.end()) {
+                write(new_socket, "ERR", 3);
+                continue;
+            }
             std::shared_ptr<ManualDevice> dev = nullptr;
             dev = std::make_shared<ManualDevice>(uuid, addr, serviceName, mux);
             devices[uuid] = dev;
