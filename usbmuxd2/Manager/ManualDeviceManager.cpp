@@ -1,13 +1,13 @@
 // jkcoxson
 
+#include "ManualDeviceManager.hpp"
+
 #include <libgeneral/macros.h>
 
-#include <iostream>
 #include <chrono>
-#include <thread>
-#include "ManualDeviceManager.hpp"
+#include <iostream>
 #include <map>
-
+#include <thread>
 
 #define PORT 32498
 using namespace std::chrono_literals;
@@ -32,7 +32,6 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
     struct sockaddr_in address;
     int opt = 1;
     int addrlen = sizeof(address);
-    char buffer[1024] = {0};
 
     // Creating socket file descriptor
     if ((server_fd = socket(AF_INET, SOCK_STREAM, 0)) == 0) {
@@ -63,6 +62,7 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
     std::map<std::string, std::shared_ptr<ManualDevice>> devices;
 
     while (0 == 0) {
+        char buffer[1024] = {0};
         if ((new_socket = accept(server_fd, (struct sockaddr *)&address, (socklen_t *)&addrlen)) < 0) {
             debug("Injection socket accept failed");
             continue;
@@ -90,14 +90,15 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
             write(new_socket, "OK", 3);
         } else {
             if (devices.find(uuid) != devices.end()) {
-                devices[uuid]->kill();
+                devices.find(uuid)->second->kill();
                 devices.erase(uuid);
                 write(new_socket, "OK", 3);
             } else {
                 debug("Tried to remove a device that doesn't exist");
                 write(new_socket, "ERR", 4);
-            }      
+            }
         }
+        close(new_socket);
         std::this_thread::sleep_for(2000ms);
     }
 }
@@ -148,4 +149,3 @@ void ManualDeviceManager::kill() noexcept {
 void ManualDeviceManager::loopEvent() {
     std::this_thread::sleep_for(2000ms);
 }
-
