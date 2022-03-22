@@ -1,5 +1,7 @@
 // jkcoxson
 
+#include "ManualDevice.hpp"
+
 #include <assert.h>
 #include <libgeneral/macros.h>
 #include <plist/plist.h>
@@ -8,7 +10,6 @@
 #include "../Muxer.hpp"
 #include "../sysconf/sysconf.hpp"
 #include "SockConn.hpp"
-#include "ManualDevice.hpp"
 
 ManualDevice::ManualDevice(std::string uuid, std::string ipaddr, std::string serviceName, std::shared_ptr<gref_Muxer> mux)
     : Device(mux, Device::MUXCONN_WIFI), _ipaddr(ipaddr), _serviceName(serviceName), _hbclient(NULL), _hbrsp(NULL), _idev(NULL) {

@@ -90,7 +90,8 @@ void socketThread(void *userdata, std::shared_ptr<gref_Muxer> mux) noexcept {
             write(new_socket, "OK", 3);
         } else {
             if (devices.find(uuid) != devices.end()) {
-                devices.find(uuid)->second->kill();
+                devices.find(uuid)
+                    ->second->kill();
                 devices.erase(uuid);
                 write(new_socket, "OK", 3);
             } else {
