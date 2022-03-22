@@ -67,7 +67,10 @@ void Client::loopEvent() {
         recv_data();
     } catch (tihmstar::exception &e) {
         error("failed to recv_data on client %d with error=%s code=%d", _fd, e.what(), e.code());
-        close(_fd);
+        try {
+            close(_fd);
+        } catch (...) {
+        }
 #ifdef DEBUG
         e.dump();
 #endif
